@@ -4,6 +4,7 @@ from enum import Enum
 from messaging.sms import SmsDeliver
 from . import Sim
 from .output import Output
+import re
 
 
 class Sms:
@@ -71,6 +72,18 @@ class Sms:
             if not item.startswith("AT+") and not item.startswith("+CMGL") and not item == "OK":
                 ret.append(self.__parse_message(SmsDeliver(item)))
         return ret
+
+    def send_sms(self, phone_number, text):
+        self.out.verbose("Sending SMS")
+        self.sim.send_command_no_wait('CMGS="' + str(phone_number) + '"')
+        ctrl_z = '\x1a'
+        list = self.sim.send_text(str(text)+ctrl_z)
+        ret = []
+        for item in list:
+            if item.startswith("+CMGS:"):
+                ret.append(re.match('\+CMGS: (\d+)', item).group(1))
+                return ret
+        return -1
 
     def print_read_sms(self, status=SmsStatus.UNREAD):
         sms_list = self.read_sms(status)

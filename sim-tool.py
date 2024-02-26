@@ -10,6 +10,8 @@ from sim import Output
 
 tool = ""
 file = ""
+text = ""
+number = ""
 port = "/dev/ttyS0"  # Raspberry Pi 3
 verbose = False
 action = ""
@@ -45,16 +47,20 @@ def usage_sms():
     print("Actions:")
     print("read             : Read SMS")
     print("delete           : Delete SMS")
+    print("write            : Write SMS")
     print("Options:")
     print("-f --file        : Write sms json to specified output file")
     print("-p --port        : Device to use, default /dev/ttyS0")
     print("-v --verbose     : Activate verbose logging to console")
+    print("--text           : Text for message")
+    print("-n --number      : Phone number")
     print("-h --help        : Print this text")
     print("Special action options:")
     print("--status          : SMS status (READ,UNREAD,ALL) for action read")
     print("Example:")
     print("sim-tool sms -a delete")
     print("sim-tool sms --action=read --status=ALL --file=lte.json --verbose")
+    print("sim-tool sms --action=write --number=+34555555 --text=\"Hello everyone\"")
     print("")
 
 
@@ -112,8 +118,8 @@ if __name__ == "__main__":
         if tool not in ['sms', 'gps', 'lte']:
             print("Tool '" + tool + "' is invalid. Please run sim-tool --help for more information.")
             sys.exit(2)
-        opts, args = getopt.getopt(sys.argv[2:], 't:f:p:a:hv', ['tool=', 'file=', 'port=', 'help', 'verbose', 'action=',
-                                                                'apn=', 'status=', 'location1=', 'location2='])
+        opts, args = getopt.getopt(sys.argv[2:], 't:f:p:a:hvn:', ['tool=', 'file=', 'port=', 'help', 'verbose', 'action=',
+                                                                'apn=', 'status=', 'location1=', 'location2=', 'text=', 'number='])
     except (getopt.GetoptError, IndexError) as e:
         usage()
         sys.exit(2)
@@ -124,6 +130,10 @@ if __name__ == "__main__":
             sys.exit(2)
         elif opt in ('-f', '--file'):
             file = arg
+        elif opt in ('--text'):
+            text = arg
+        elif opt in ('-n', '--number'):
+            number = arg
         elif opt in ('-p', '--port'):
             port = arg
         elif opt in ('-v', '--verbose'):
@@ -152,7 +162,11 @@ if __name__ == "__main__":
 
     out = Output(file, verbose)
     if tool == "sms":
-        if action == "read":
+        if action == "write":
+            sms = Sms(port, out)
+            sms.send_sms(number, text)
+            sms.close()
+        elif action == "read":
             sms = Sms(port, out)
             sms.print_read_sms(status)
             sms.close()
