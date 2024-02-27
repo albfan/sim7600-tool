@@ -54,7 +54,7 @@ class Sms:
     def __set_operation_mode(self, operation_mode=OperationMode.PDU):
         self.out.verbose("Setting Operation Mode to " + str(operation_mode))
         result = self.sim.send_command("CMGF=" + str(operation_mode.value))
-        return len(result) == 2 and result[1] == "OK"
+        return len(result) == 1 and result[0] == "OK"
 
     def __parse_message(self, sms):
         text = sms.text
