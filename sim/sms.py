@@ -38,15 +38,15 @@ class Sms:
                 'date': self.date
             }
 
-    def __init__(self, port, out=Output()):
+    def __init__(self, port, mode=OperationMode.PDU, out=Output() ):
         self.sim = Sim(port)
         self.out = out
         if self.sim.ok():
             self.out.verbose("Successful init of SMS")
-            if self.__set_operation_mode(Sms.OperationMode.PDU):
-                self.out.verbose("Operation mode set to PDU successfully")
+            if self.__set_operation_mode(mode):
+                self.out.verbose("Operation mode set successfully")
             else:
-                self.out.output("Could not set Operation mode to PDU for SMS")
+                self.out.output("Could not set Operation mode for SMS")
                 sys.exit(2)
         else:
             self.out.output("Could not init SMS")
