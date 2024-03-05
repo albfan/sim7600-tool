@@ -47,7 +47,7 @@ def usage_sms():
     print("Actions:")
     print("read             : Read SMS")
     print("delete           : Delete SMS")
-    print("write            : Write SMS")
+    print("send             : Send SMS")
     print("Options:")
     print("-f --file        : Write sms json to specified output file")
     print("-p --port        : Device to use, default /dev/ttyS0")
@@ -162,7 +162,7 @@ if __name__ == "__main__":
 
     out = Output(file, verbose)
     if tool == "sms":
-        if action == "write":
+        if action == "send":
             sms = Sms(port, Sms.OperationMode.TEXT, out)
             sms.send_sms(number, text)
             sms.close()
