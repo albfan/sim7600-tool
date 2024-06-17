@@ -163,7 +163,7 @@ if __name__ == "__main__":
     out = Output(file, verbose)
     if tool == "sms":
         if action == "send":
-            sms = Sms(port, Sms.OperationMode.TEXT, out)
+            sms = Sms(port, out, Sms.OperationMode.TEXT)
             sms.send_sms(number, text)
             sms.close()
         elif action == "read":

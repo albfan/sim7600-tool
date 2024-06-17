@@ -38,7 +38,7 @@ class Sms:
                 'date': self.date
             }
 
-    def __init__(self, port, mode=OperationMode.PDU, out=Output() ):
+    def __init__(self, port, out=Output(), mode=OperationMode.PDU ):
         self.sim = Sim(port)
         self.out = out
         if self.sim.ok():
